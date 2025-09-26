@@ -1,28 +1,37 @@
-import { createInterface } from "node:readline";
+import { State } from "./state.js";
 
-export function startREPL() {
-    const rl = createInterface({
-        input: process.stdin,
-        output: process.stdout,
-        prompt: "Enter your prompt ",
-    });
+export function startREPL(state:State) {
+    //initial prompt
+    state.readline.prompt();
 
-    rl.prompt();
-
-    rl.on('line', (line) => {
-  //console.log(`Received: ${line}`);
-  if(line.length === 0) {
-    rl.prompt();
+    //start listener
+    state.readline.on('line', (line) => {
+  let words = cleanInput(line);   
+  if(words.length === 0) {
+    state.readline.prompt();
     return;
   }
 
-  let result = cleanInput(line);
-  console.log(`Your command was: ${result[0]}`);
+const commands = state.commands;
+const cmd = commands[line];
 
-  rl.prompt();
-});
+if(!cmd) {
+  console.log(`Unknown command: ${line}`);
+  state.readline.prompt();
+  return;
 }
 
+try  {
+  cmd.callback(state);
+  state.readline.prompt();
+  return;
+}
+  catch(e) {
+    console.log(e);
+  }
+  
+});
+}
 
 export function cleanInput(string: string):string[] {
     let splitString = string.replace(/\s+/g, ' ').trim().toLowerCase().split(' ');
@@ -30,4 +39,3 @@ export function cleanInput(string: string):string[] {
     return splitString;
 }
 
-//export {};
