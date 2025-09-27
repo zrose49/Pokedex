@@ -1,6 +1,6 @@
 import { State } from "./state";
 
-export function commandExit(state: State) {
+export async function commandExit(state: State) {
     console.log("\n");
     console.log("Closing the Pokedex... Goodbye!");
     state.readline.close();
