@@ -5,7 +5,7 @@ export function startREPL(state:State) {
     state.readline.prompt();
 
     //start listener
-    state.readline.on('line', (line) => {
+    state.readline.on('line', async (line) => {
   let words = cleanInput(line);   
   if(words.length === 0) {
     state.readline.prompt();
@@ -22,7 +22,7 @@ if(!cmd) {
 }
 
 try  {
-  cmd.callback(state);
+  await cmd.callback(state);
   state.readline.prompt();
   return;
 }
