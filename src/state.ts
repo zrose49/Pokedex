@@ -13,10 +13,10 @@ export type State = {
     readline: Interface;
     pokeapi: PokeAPI;
     nextLocationsURL: string;
-    prevLocationsURL: string | null;
+    prevLocationsURL: string;
 }
 
-export async function initState(): Promise<State> {
+export function initState() {
     //create readline interface
     const rl = createInterface({
         input: process.stdin,
@@ -27,17 +27,12 @@ export async function initState(): Promise<State> {
     //create commands registry
     const commands = getCommands();
 
-    const poke = new PokeAPI;
-    const locations = await poke.fetchLocations();
-    const nextLocationsURL = locations.next;
-    const prevLocationsURL = locations.previous;
-
     const newState: State = {
         commands: commands,
         readline: rl,
-        pokeapi: poke,
-        nextLocationsURL: nextLocationsURL,
-        prevLocationsURL: prevLocationsURL,
+        pokeapi: new PokeAPI(),
+        nextLocationsURL: "",
+        prevLocationsURL: "",
     };
 
     return newState;

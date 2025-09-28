@@ -1,6 +1,6 @@
 import { State } from "./state.js";
 
-export function startREPL(state:State) {
+export async function startREPL(state:State) {
     //initial prompt
     state.readline.prompt();
 
@@ -27,7 +27,7 @@ try  {
   return;
 }
   catch(e) {
-    console.log(e);
+    console.log((e as Error).message);
   }
   
 });
