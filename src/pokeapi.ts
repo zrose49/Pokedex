@@ -1,11 +1,22 @@
+import { Cache, CacheEntry } from "./pokecache.js";
+
 export class PokeAPI {
   private static readonly baseURL = "https://pokeapi.co/api/v2";
+  pokecache = new Cache(500);
 
   constructor() {}
 
   async fetchLocations(pageURL?: string): Promise<ShallowLocations> {
+
     let url = pageURL || `${PokeAPI.baseURL}/location-area`;
-    
+
+    //check if cache exists first and return it
+        const cachedResponse:CacheEntry<ShallowLocations> | undefined = this.pokecache.get(url);
+        console.log(cachedResponse);
+        if (cachedResponse !== undefined) {
+        return cachedResponse.val;
+        }
+
     let response = await fetch(url, {
         method: "GET",
         mode: "cors",
