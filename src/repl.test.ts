@@ -1,5 +1,5 @@
 import { cleanInput } from "./repl";
-console.log(cleanInput);
+import { Cache } from "./pokecache.js";
 import { describe,test,expect } from "vitest";
 
 describe.each([
@@ -19,7 +19,6 @@ describe.each([
 
 )("cleanInput($input)", ({ input, expected }) => {
   test(`Expected1: ${expected}`, () => {
-    // TODO: call cleanInput with the input here
     let actual = cleanInput(input);
     expect(actual).toHaveLength(expected.length);
     for (const i in expected) {

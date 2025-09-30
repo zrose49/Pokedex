@@ -1,20 +1,26 @@
-import { Cache, CacheEntry } from "./pokecache.js";
+import { Cache } from "./pokecache.js";
 
 export class PokeAPI {
   private static readonly baseURL = "https://pokeapi.co/api/v2";
-  pokecache = new Cache(500);
+  private cache: Cache;
 
-  constructor() {}
+  constructor(cacheInterval: number) {
+    this.cache = new Cache(cacheInterval);
+  }
+  closeCache() {
+        this.cache.stopReapLoop();
+    }
+
 
   async fetchLocations(pageURL?: string): Promise<ShallowLocations> {
 
     let url = pageURL || `${PokeAPI.baseURL}/location-area`;
 
-    //check if cache exists first and return it
-        const cachedResponse:CacheEntry<ShallowLocations> | undefined = this.pokecache.get(url);
+    //check if response exists in cache first and return it if it does
+        const cachedResponse= this.cache.get<ShallowLocations>(url);
         console.log(cachedResponse);
-        if (cachedResponse !== undefined) {
-        return cachedResponse.val;
+        if (cachedResponse) {
+        return cachedResponse;
         }
 
     let response = await fetch(url, {
@@ -25,7 +31,9 @@ export class PokeAPI {
         },
     });
 
-    const locations = await response.json();
+    const locations: ShallowLocations = await response.json();
+    //add response to cache
+    this.cache.add(url,locations);
     
     return locations;
     
@@ -33,6 +41,11 @@ export class PokeAPI {
 
   async fetchLocation(locationName: string): Promise<Location> {
     let url = `${PokeAPI.baseURL}/location-area/${locationName}`;
+
+    const cachedResponse = this.cache.get<Location>(url);
+    if(cachedResponse) {
+        return cachedResponse;
+    }
 
     let response = await fetch(url, {
         method: "GET",
@@ -42,7 +55,8 @@ export class PokeAPI {
         }
     });
 
-    const location = await response.json();
+    const location: Location = await response.json();
+    this.cache.add(url,location);
 
     return location;
 
