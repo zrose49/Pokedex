@@ -12,8 +12,9 @@ export async function startREPL(state:State) {
     return;
   }
 
-const commands = state.commands;
-const cmd = commands[line];
+const commandName = words[0];
+const cmd = state.commands[commandName];
+const cmd2 = words.slice(1);
 
 if(!cmd) {
   console.log(`Unknown command: ${line}`);
@@ -22,7 +23,7 @@ if(!cmd) {
 }
 
 try  {
-  await cmd.callback(state);
+  await cmd.callback(state,...cmd2);
   state.readline.prompt();
   return;
 }
