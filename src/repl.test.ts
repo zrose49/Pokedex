@@ -1,5 +1,4 @@
 import { cleanInput } from "./repl";
-import { Cache } from "./pokecache.js";
 import { describe,test,expect } from "vitest";
 
 describe.each([

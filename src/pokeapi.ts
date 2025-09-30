@@ -22,7 +22,8 @@ export class PokeAPI {
         if (cachedResponse) {
         return cachedResponse;
         }
-
+try {
+    
     let response = await fetch(url, {
         method: "GET",
         mode: "cors",
@@ -31,12 +32,19 @@ export class PokeAPI {
         },
     });
 
+    if(!response.ok) {
+        throw new Error(`Request failed with ${response.status} ${response.statusText}`);
+    }
+
     const locations: ShallowLocations = await response.json();
     //add response to cache
     this.cache.add(url,locations);
     
     return locations;
-    
+}
+    catch (e) {
+    throw new Error(`Error fetching locations: ${(e as Error).message}`);
+}
 } 
 
   async fetchLocation(locationName: string): Promise<Location> {
@@ -47,7 +55,8 @@ export class PokeAPI {
         console.log("We cached Yo");
         return cachedResponse;
     }
-
+    try {
+        
     let response = await fetch(url, {
         method: "GET",
         mode: "cors",
@@ -56,10 +65,18 @@ export class PokeAPI {
         }
     });
 
+    if(!response.ok) {
+    throw new Error(`Request failed with ${response.status} ${response.statusText}`);
+    }
+
     const location: Location = await response.json();
     this.cache.add(url,location);
 
     return location;
+    }
+    catch (e) {
+        throw new Error(`Error fetching locations: ${(e as Error).message}`);
+    }
 
   }
 }
