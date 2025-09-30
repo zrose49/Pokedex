@@ -44,6 +44,7 @@ export class PokeAPI {
 
     const cachedResponse = this.cache.get<Location>(url);
     if(cachedResponse) {
+        console.log("We cached Yo");
         return cachedResponse;
     }
 
