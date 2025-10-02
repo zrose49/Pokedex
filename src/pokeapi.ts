@@ -79,7 +79,40 @@ try {
     }
 
   }
+
+  async fetchPokemon(pokemonName:string): Promise<any> {
+    let url = `${PokeAPI.baseURL}/pokemon/${pokemonName}`;
+    
+    const cachedResponse = this.cache.get<Pokemon>(url);
+    if(cachedResponse) {
+        return cachedResponse;
+    }
+
+    try {
+    let response = await fetch(url, {
+        method: "GET",
+        mode: "cors",
+        headers: {
+            "Content-type": "application/json",
+        }
+    });
+
+    if(!response.ok) {
+        throw new Error(`Pokemon API failed with: ${response.status} ${response.statusText}`);
+    }
+
+
+    let pokemonData = response.json();
+
+    return pokemonData;
 }
+catch(e) {
+console.log((e as Error).message);
+}
+}
+}
+
+export type Pokemon = any;
 
 export type ShallowLocations = {
   count: number;
